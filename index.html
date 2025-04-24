@@ -38,25 +38,52 @@
                 background-size: cover;
             }
         }
+        
+        /* Styles for the blocker overlay */
+        .blocker {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
+            width: 384px; /* 24rem */
+            height: 35px;
+            background-color: #020049;
+            z-index: 999999;
+            pointer-events: none;
+        }
+        
+        /* Make sure the blocker is visible on all device sizes */
+        @media screen and (max-width: 768px) {
+            .blocker {
+                width: 100%;
+                left: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Background image -->
     <div class="background-image"></div>
     
-    <!-- Dify chatbot setup -->
+    <!-- First chatbot (servicehoster.io) -->
+    <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script>
+    
+    <!-- Second chatbot (Dify) -->
     <script>
         window.difyChatbotConfig = {
-          token: 'oxHKBhp39pCdDBl3',
-          systemVariables: {}
+            token: 'NNdUFR87RVKchHmG',
+            systemVariables: {}
         }
     </script>
-    <script src="https://udify.app/embed.min.js" id="oxHKBhp39pCdDBl3" defer></script>
+    <script src="https://udify.app/embed.min.js" id="NNdUFR87RVKchHmG" defer></script>
     
-    <!-- After reviewing their documentation, let's create a full-width overlay at the bottom -->
-    <div id="powered-by-overlay" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #020049; z-index: 999999; pointer-events: none;"></div>
+    <!-- Multiple overlays to ensure coverage -->
+    <div class="blocker" style="bottom: 0px;"></div>
+    <div class="blocker" style="bottom: 1px;"></div>
+    <div class="blocker" style="bottom: 2px;"></div>
     
+    <!-- Styling for the chatbot -->
     <style>
-        /* Position the chatbot on the left */
+        /* Position the Dify chatbot on the left */
         #dify-chatbot-bubble-button {
             background-color: #1C64F2 !important;
             left: 20px !important; 
@@ -70,23 +97,130 @@
             right: auto !important;
         }
         
-        /* Try to hide any footer inside the chatbot */
-        iframe {
-            margin-bottom: -30px !important;
-            height: calc(100% + 30px) !important;
+        /* Try to target and hide any footer elements */
+        [class*="powered"],
+        [class*="footer"],
+        div[style*="bottom: 0"],
+        div[style*="bottom:0"],
+        #dify-chatbot-bubble-window > div:last-child,
+        .dify-chatbot-powered-by,
+        [id*="powered"],
+        [id*="footer"] {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            display: none !important;
+            height: 0 !important;
+            width: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
         }
         
-        /* The hardcoded overlay */
-        #powered-by-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background-color: #020049;
-            z-index: 999999;
-            pointer-events: none;
+        /* Add extra margin to push content up */
+        #dify-chatbot-bubble-window > div:nth-last-child(2) {
+            margin-bottom: 40px !important;
         }
     </style>
+    
+    <!-- Script to create and maintain dynamic blockers -->
+    <script>
+        function createAndPositionBlockers() {
+            // Find the chatbot window
+            const chatWindow = document.getElementById('dify-chatbot-bubble-window');
+            
+            // Create dynamic blockers
+            if (chatWindow) {
+                // Get the position of the chat window
+                const chatRect = chatWindow.getBoundingClientRect();
+                
+                // Create or update a dynamic blocker
+                let blocker = document.getElementById('dynamic-blocker');
+                if (!blocker) {
+                    blocker = document.createElement('div');
+                    blocker.id = 'dynamic-blocker';
+                    blocker.style.position = 'fixed';
+                    blocker.style.backgroundColor = '#020049';
+                    blocker.style.zIndex = '9999999';
+                    blocker.style.pointerEvents = 'none';
+                    document.body.appendChild(blocker);
+                }
+                
+                // Position it at the bottom of the chat window
+                blocker.style.left = chatRect.left + 'px';
+                blocker.style.bottom = '0';
+                blocker.style.width = chatRect.width + 'px';
+                blocker.style.height = '50px';
+                
+                // Create additional blocker for absolute coverage
+                let wideBlocker = document.getElementById('wide-blocker');
+                if (!wideBlocker) {
+                    wideBlocker = document.createElement('div');
+                    wideBlocker.id = 'wide-blocker';
+                    wideBlocker.style.position = 'fixed';
+                    wideBlocker.style.backgroundColor = '#020049';
+                    wideBlocker.style.bottom = '0';
+                    wideBlocker.style.left = '0';
+                    wideBlocker.style.width = '100%';
+                    wideBlocker.style.height = '40px';
+                    wideBlocker.style.zIndex = '9999998';
+                    wideBlocker.style.pointerEvents = 'none';
+                    document.body.appendChild(wideBlocker);
+                }
+                
+                // Find all iframes and attempt to inject CSS
+                const iframes = document.querySelectorAll('iframe');
+                iframes.forEach(function(iframe) {
+                    try {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        let style = iframeDoc.getElementById('blocker-style');
+                        
+                        if (!style) {
+                            style = iframeDoc.createElement('style');
+                            style.id = 'blocker-style';
+                            style.textContent = `
+                                [class*="powered"], [class*="footer"], div[style*="bottom: 0"], div[style*="bottom:0"] {
+                                    display: none !important;
+                                    visibility: hidden !important;
+                                    opacity: 0 !important;
+                                }
+                                body::after {
+                                    content: "";
+                                    position: fixed;
+                                    bottom: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 40px;
+                                    background-color: #020049;
+                                    z-index: 999999;
+                                }
+                            `;
+                            iframeDoc.head.appendChild(style);
+                        }
+                    } catch (e) {
+                        // Cross-origin access prevented
+                    }
+                });
+            }
+        }
+        
+        // Run the function on load and periodically
+        window.addEventListener('load', function() {
+            setTimeout(createAndPositionBlockers, 1000);
+            setTimeout(createAndPositionBlockers, 3000);
+            setTimeout(createAndPositionBlockers, 5000);
+            setInterval(createAndPositionBlockers, 2000);
+        });
+        
+        // Also run the function when window is resized
+        window.addEventListener('resize', createAndPositionBlockers);
+        
+        // Create a MutationObserver to detect changes to the DOM
+        const observer = new MutationObserver(function(mutations) {
+            createAndPositionBlockers();
+        });
+        
+        // Start observing the document with the configured parameters
+        observer.observe(document.body, { childList: true, subtree: true });
+    </script>
 </body>
 </html>
