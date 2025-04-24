@@ -72,8 +72,19 @@ window.difyChatbotConfig = {
   left: 20px !important;
   right: auto !important;
 }
-.dify-chatbot-powered-by {
+/* Multiple selectors to ensure we catch the "Powered by" element */
+.dify-chatbot-powered-by,
+[class*="powered-by"],
+[class*="POWERED BY"],
+#dify-chatbot-bubble-window footer,
+#dify-chatbot-bubble-window [class*="footer"],
+#dify-chatbot-bubble-window > div > div > div:last-child {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 </style>
 </body>
