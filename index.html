@@ -38,25 +38,12 @@
                 background-size: cover;
             }
         }
-        
-        /* Custom overlay for the "Powered by" section */
-        .powered-by-blocker {
-            position: fixed;
-            left: 20px;
-            bottom: 0;
-            width: 100px;
-            height: 30px;
-            background-color: #020049;
-            z-index: 999999;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
-    <!-- Photo background div -->
     <div class="background-image"></div>
     
-    <!-- Dify Chatbot Setup -->
+    <!-- Dify chatbot setup -->
     <script>
         window.difyChatbotConfig = {
           token: 'NNdUFR87RVKchHmG',
@@ -64,60 +51,42 @@
         }
     </script>
     <script src="https://udify.app/embed.min.js" id="NNdUFR87RVKchHmG" defer></script>
+    
+    <!-- After reviewing their documentation, let's create a full-width overlay at the bottom -->
+    <div id="powered-by-overlay" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #020049; z-index: 999999; pointer-events: none;"></div>
+    
     <style>
+        /* Position the chatbot on the left */
         #dify-chatbot-bubble-button {
-          background-color: #1C64F2 !important;
-          left: 20px !important; 
-          right: auto !important;
+            background-color: #1C64F2 !important;
+            left: 20px !important; 
+            right: auto !important;
         }
+        
         #dify-chatbot-bubble-window {
-          width: 24rem !important;
-          height: 40rem !important;
-          left: 20px !important;
-          right: auto !important;
+            width: 24rem !important;
+            height: 40rem !important;
+            left: 20px !important;
+            right: auto !important;
+        }
+        
+        /* Try to hide any footer inside the chatbot */
+        iframe {
+            margin-bottom: -30px !important;
+            height: calc(100% + 30px) !important;
+        }
+        
+        /* The hardcoded overlay */
+        #powered-by-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #020049;
+            z-index: 999999;
+            pointer-events: none;
         }
     </style>
-    
-    <!-- Remove the other chatbot service if not needed -->
-    <!-- <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script> -->
-    
-    <!-- Custom script for blocking "Powered by" text -->
-    <script>
-        // Function to create and position the blocker over the "Powered by" text
-        function createPoweredByBlocker() {
-            // Remove any existing blockers
-            const existingBlockers = document.querySelectorAll('.powered-by-blocker');
-            existingBlockers.forEach(blocker => blocker.remove());
-            
-            // Create new blocker
-            const blocker = document.createElement('div');
-            blocker.className = 'powered-by-blocker';
-            document.body.appendChild(blocker);
-            
-            // Position it precisely where the "Powered by" text appears
-            blocker.style.position = 'fixed';
-            blocker.style.left = '20px';  // Match the left position of the chatbot
-            blocker.style.bottom = '0';
-            blocker.style.width = '100px'; // Width to cover just the "Powered by" text
-            blocker.style.height = '30px'; // Height to cover the text
-            blocker.style.backgroundColor = '#020049'; // Match the background color
-            blocker.style.zIndex = '999999'; // Very high z-index
-            blocker.style.pointerEvents = 'none'; // Allow clicks to pass through
-        }
-        
-        // Run the function when the page loads and when the window is resized
-        window.addEventListener('load', function() {
-            // Set a delay to make sure the chatbot is loaded
-            setTimeout(createPoweredByBlocker, 1000);
-            setTimeout(createPoweredByBlocker, 3000);
-            setTimeout(createPoweredByBlocker, 5000);
-        });
-        
-        // Also reposition the blocker if the window is resized
-        window.addEventListener('resize', createPoweredByBlocker);
-        
-        // Check periodically to ensure the blocker stays in place
-        setInterval(createPoweredByBlocker, 2000);
-    </script>
 </body>
 </html>
