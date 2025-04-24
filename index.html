@@ -67,45 +67,46 @@
     <!-- First chatbot (servicehoster.io) -->
     <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script>
     
-    <!-- Second chatbot (Dify) -->
+    <!-- Second chatbot (updated token) -->
     <script>
-        window.difyChatbotConfig = {
-            token: 'NNdUFR87RVKchHmG',
+        window.difyChatbotConfig = { 
+            token: 'oxHKBhp39pCdDBl3', 
             systemVariables: {}
         }
     </script>
-    <script src="https://udify.app/embed.min.js" id="NNdUFR87RVKchHmG" defer></script>
+    <script src="https://udify.app/embed.min.js" id="oxHKBhp39pCdDBl3" defer></script>
     
     <!-- Multiple overlays to ensure coverage -->
     <div class="blocker" style="bottom: 0px;"></div>
     <div class="blocker" style="bottom: 1px;"></div>
     <div class="blocker" style="bottom: 2px;"></div>
     
-    <!-- Styling for the chatbot -->
+    <!-- Styling for the chatbot - using generic attribute selectors -->
     <style>
-        /* Position the Dify chatbot on the left */
-        #dify-chatbot-bubble-button {
+        /* Position the chatbot on the left using attribute selectors */
+        [id$="-bubble-button"] {
             background-color: #1C64F2 !important;
             left: 20px !important; 
             right: auto !important;
         }
         
-        #dify-chatbot-bubble-window {
+        [id$="-bubble-window"] {
             width: 24rem !important;
             height: 40rem !important;
             left: 20px !important;
             right: auto !important;
         }
         
-        /* Try to target and hide any footer elements */
+        /* Hide any footer elements or powered by messages */
         [class*="powered"],
         [class*="footer"],
         div[style*="bottom: 0"],
         div[style*="bottom:0"],
-        #dify-chatbot-bubble-window > div:last-child,
-        .dify-chatbot-powered-by,
         [id*="powered"],
-        [id*="footer"] {
+        [id*="footer"],
+        iframe + div:last-child,
+        div[class*="bottom"],
+        div[class*="Bottom"] {
             opacity: 0 !important;
             visibility: hidden !important;
             display: none !important;
@@ -117,7 +118,7 @@
         }
         
         /* Add extra margin to push content up */
-        #dify-chatbot-bubble-window > div:nth-last-child(2) {
+        iframe + div:nth-last-child(2) {
             margin-bottom: 40px !important;
         }
     </style>
@@ -125,19 +126,20 @@
     <!-- Script to create and maintain dynamic blockers -->
     <script>
         function createAndPositionBlockers() {
-            // Find the chatbot window
-            const chatWindow = document.getElementById('dify-chatbot-bubble-window');
+            // Find all elements that might be chatbot windows
+            const chatWindows = document.querySelectorAll('[id$="-bubble-window"]');
             
-            // Create dynamic blockers
-            if (chatWindow) {
+            chatWindows.forEach(function(chatWindow) {
                 // Get the position of the chat window
                 const chatRect = chatWindow.getBoundingClientRect();
                 
                 // Create or update a dynamic blocker
-                let blocker = document.getElementById('dynamic-blocker');
+                let blockerId = 'dynamic-blocker-' + chatWindow.id;
+                let blocker = document.getElementById(blockerId);
+                
                 if (!blocker) {
                     blocker = document.createElement('div');
-                    blocker.id = 'dynamic-blocker';
+                    blocker.id = blockerId;
                     blocker.style.position = 'fixed';
                     blocker.style.backgroundColor = '#020049';
                     blocker.style.zIndex = '9999999';
@@ -150,57 +152,57 @@
                 blocker.style.bottom = '0';
                 blocker.style.width = chatRect.width + 'px';
                 blocker.style.height = '50px';
-                
-                // Create additional blocker for absolute coverage
-                let wideBlocker = document.getElementById('wide-blocker');
-                if (!wideBlocker) {
-                    wideBlocker = document.createElement('div');
-                    wideBlocker.id = 'wide-blocker';
-                    wideBlocker.style.position = 'fixed';
-                    wideBlocker.style.backgroundColor = '#020049';
-                    wideBlocker.style.bottom = '0';
-                    wideBlocker.style.left = '0';
-                    wideBlocker.style.width = '100%';
-                    wideBlocker.style.height = '40px';
-                    wideBlocker.style.zIndex = '9999998';
-                    wideBlocker.style.pointerEvents = 'none';
-                    document.body.appendChild(wideBlocker);
-                }
-                
-                // Find all iframes and attempt to inject CSS
-                const iframes = document.querySelectorAll('iframe');
-                iframes.forEach(function(iframe) {
-                    try {
-                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        let style = iframeDoc.getElementById('blocker-style');
-                        
-                        if (!style) {
-                            style = iframeDoc.createElement('style');
-                            style.id = 'blocker-style';
-                            style.textContent = `
-                                [class*="powered"], [class*="footer"], div[style*="bottom: 0"], div[style*="bottom:0"] {
-                                    display: none !important;
-                                    visibility: hidden !important;
-                                    opacity: 0 !important;
-                                }
-                                body::after {
-                                    content: "";
-                                    position: fixed;
-                                    bottom: 0;
-                                    left: 0;
-                                    width: 100%;
-                                    height: 40px;
-                                    background-color: #020049;
-                                    z-index: 999999;
-                                }
-                            `;
-                            iframeDoc.head.appendChild(style);
-                        }
-                    } catch (e) {
-                        // Cross-origin access prevented
-                    }
-                });
+            });
+            
+            // Create a full-width blocker for absolute coverage
+            let wideBlocker = document.getElementById('wide-blocker');
+            if (!wideBlocker) {
+                wideBlocker = document.createElement('div');
+                wideBlocker.id = 'wide-blocker';
+                wideBlocker.style.position = 'fixed';
+                wideBlocker.style.backgroundColor = '#020049';
+                wideBlocker.style.bottom = '0';
+                wideBlocker.style.left = '0';
+                wideBlocker.style.width = '100%';
+                wideBlocker.style.height = '40px';
+                wideBlocker.style.zIndex = '9999998';
+                wideBlocker.style.pointerEvents = 'none';
+                document.body.appendChild(wideBlocker);
             }
+            
+            // Find all iframes and attempt to inject CSS
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(function(iframe) {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    let style = iframeDoc.getElementById('blocker-style');
+                    
+                    if (!style) {
+                        style = iframeDoc.createElement('style');
+                        style.id = 'blocker-style';
+                        style.textContent = `
+                            [class*="powered"], [class*="footer"], div[style*="bottom: 0"], div[style*="bottom:0"] {
+                                display: none !important;
+                                visibility: hidden !important;
+                                opacity: 0 !important;
+                            }
+                            body::after {
+                                content: "";
+                                position: fixed;
+                                bottom: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 40px;
+                                background-color: #020049;
+                                z-index: 999999;
+                            }
+                        `;
+                        iframeDoc.head.appendChild(style);
+                    }
+                } catch (e) {
+                    // Cross-origin access prevented
+                }
+            });
         }
         
         // Run the function on load and periodically
