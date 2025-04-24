@@ -72,20 +72,20 @@ window.difyChatbotConfig = {
   left: 20px !important;
   right: auto !important;
 }
-/* Multiple selectors to ensure we catch the "Powered by" element */
-.dify-chatbot-powered-by,
-[class*="powered-by"],
-[class*="POWERED BY"],
-#dify-chatbot-bubble-window footer,
-#dify-chatbot-bubble-window [class*="footer"],
-#dify-chatbot-bubble-window > div > div > div:last-child {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
 </style>
+
+<!-- Add this script to create an overlay after the chatbot loads -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for the chatbot to load
+  setTimeout(function() {
+    // Create overlay element
+    var overlay = document.createElement('div');
+    overlay.id = 'powered-by-overlay';
+    overlay.style.cssText = 'position: fixed; z-index: 99999; background-color: #020049; width: 24rem; height: 30px; bottom: 0; left: 20px; pointer-events: none;';
+    document.body.appendChild(overlay);
+  }, 2000); // Wait 2 seconds for chatbot to load
+});
+</script>
 </body>
 </html>
