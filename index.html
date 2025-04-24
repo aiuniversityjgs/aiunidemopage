@@ -20,212 +20,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://filedn.eu/lGTrUbvdnToQKjrXYVErc20/9019796.jpg');
+            background-image: url('https://filedn.eu/lGTrUbvdnToQKjrXYVErc20/9019796.jpg'); /* Replace with your image URL */
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             z-index: -1;
         }
         
+        /* Mobile optimization */
         @media screen and (max-width: 768px) {
             .background-image {
+                /* Adjust background position for mobile */
                 background-position: center center;
             }
         }
         
+        /* Additional mobile optimization for very small screens */
         @media screen and (max-width: 480px) {
             .background-image {
+                /* Further adjustments for very small screens if needed */
                 background-size: cover;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background image -->
+    <!-- Photo background div -->
     <div class="background-image"></div>
     
-    <!-- First chatbot (servicehoster.io) -->
+    <!-- Embed Code -->
     <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script>
-    
-    <!-- Chatbot embed code -->
-    <script>
-        window.difyChatbotConfig = {
-            token: 'oxHKBhp39pCdDBl3',
-            systemVariables: {
-                // user_id: 'YOU CAN DEFINE USER ID HERE',
-            },
-        }
-    </script>
-    <script src="https://udify.app/embed.min.js" id="oxHKBhp39pCdDBl3" defer></script>
-    
-    <style>
-        /* Position the chatbot on the left */
-        #dify-chatbot-bubble-button {
-            background-color: #1C64F2 !important;
-            left: 20px !important; 
-            right: auto !important;
-        }
-        
-        #dify-chatbot-bubble-window {
-            width: 24rem !important;
-            height: 40rem !important;
-            left: 20px !important;
-            right: auto !important;
-        }
-        
-        /* Hide the footer - multiple approaches */
-        [class*="powered-by"],
-        [class*="footer"],
-        [class*="bottom-bar"],
-        [class*="attribution"],
-        [class*="credit"],
-        [class*="copyright"],
-        [id*="powered-by"],
-        [id*="footer"],
-        [id*="bottom-bar"],
-        [id*="attribution"],
-        [id*="credit"],
-        [id*="copyright"] {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            width: 0 !important;
-            overflow: hidden !important;
-            position: absolute !important;
-            pointer-events: none !important;
-        }
-        
-        /* Add custom footer blocker that will remain fixed at the bottom */
-        .custom-footer-blocker {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            height: 40px !important;
-            width: 100% !important;
-            background-color: #020049 !important;
-            z-index: 2147483647 !important; /* Maximum z-index value */
-            pointer-events: none !important;
-        }
-        
-        /* Targeted blocker specific to chatbot position */
-        .chatbot-footer-blocker {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 20px !important;
-            height: 40px !important;
-            width: 384px !important; /* 24rem */
-            background-color: #020049 !important;
-            z-index: 2147483647 !important;
-            pointer-events: none !important;
-        }
-        
-        @media screen and (max-width: 768px) {
-            .chatbot-footer-blocker {
-                width: 100% !important;
-                left: 0 !important;
-            }
-        }
-        
-        /* Apply negative margin to push content up */
-        #dify-chatbot-bubble-window > div:last-child,
-        #dify-chatbot-bubble-window > div > div:last-child {
-            margin-bottom: -40px !important;
-        }
-    </style>
-    
-    <!-- Static blockers that will always be present -->
-    <div class="custom-footer-blocker"></div>
-    <div class="chatbot-footer-blocker"></div>
-    
-    <!-- Advanced JavaScript solution -->
-    <script>
-        // Function to ensure our blockers remain on top
-        function ensureBlockersAreVisible() {
-            // Try to find any elements that might be a footer
-            const possibleFooters = document.querySelectorAll('[class*="powered"],[class*="footer"],[class*="bottom-bar"]');
-            
-            // Force hide them
-            possibleFooters.forEach(element => {
-                element.style.display = 'none';
-                element.style.visibility = 'hidden';
-                element.style.opacity = '0';
-                element.style.height = '0';
-            });
-            
-            // Find all iframes to try style injection
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-                try {
-                    // Try to access iframe content
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    
-                    // Check if we've already injected our style
-                    if (!iframeDoc.getElementById('footer-hider-style')) {
-                        // Create a style element
-                        const style = iframeDoc.createElement('style');
-                        style.id = 'footer-hider-style';
-                        style.textContent = `
-                            [class*="powered"], [class*="footer"], [class*="bottom-bar"],
-                            [class*="attribution"], [class*="credit"], [class*="copyright"] {
-                                display: none !important;
-                                visibility: hidden !important;
-                                opacity: 0 !important;
-                                height: 0 !important;
-                            }
-                            
-                            /* Add a cover at the bottom of the iframe */
-                            body::after {
-                                content: "";
-                                position: fixed;
-                                bottom: 0;
-                                left: 0;
-                                right: 0;
-                                height: 40px;
-                                background-color: #020049;
-                                z-index: 2147483647;
-                                pointer-events: none;
-                            }
-                        `;
-                        
-                        // Add it to the iframe
-                        iframeDoc.head.appendChild(style);
-                    }
-                } catch (e) {
-                    // Cross-origin restriction, can't access iframe
-                }
-            });
-            
-            // Make sure our blockers are on top by recreating them
-            const existingBlockers = document.querySelectorAll('.custom-footer-blocker, .chatbot-footer-blocker');
-            existingBlockers.forEach(blocker => {
-                // Clone and replace to ensure they're on top of DOM
-                const newBlocker = blocker.cloneNode(true);
-                document.body.appendChild(newBlocker);
-                setTimeout(() => {
-                    try {
-                        if (document.body.contains(blocker)) {
-                            document.body.removeChild(blocker);
-                        }
-                    } catch (e) {
-                        // Element might be already removed
-                    }
-                }, 100);
-            });
-        }
-        
-        // Run on load and periodically, but with limited frequency for performance
-        window.addEventListener('load', function() {
-            // Initial runs after various delays
-            setTimeout(ensureBlockersAreVisible, 1000);
-            setTimeout(ensureBlockersAreVisible, 3000);
-            
-            // Set up a less frequent interval to maintain the blockers
-            setInterval(ensureBlockersAreVisible, 5000);
-        });
-        
-        // Run once on resize
-        window.addEventListener('resize', ensureBlockersAreVisible);
-    </script>
 </body>
 </html>
