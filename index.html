@@ -20,27 +20,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://filedn.eu/lGTrUbvdnToQKjrXYVErc20/9019796.jpg'); /* Replace with your image URL */
+            background-image: url('https://filedn.eu/lGTrUbvdnToQKjrXYVErc20/9019796.jpg');
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             z-index: -1;
         }
         
-        /* Mobile optimization */
         @media screen and (max-width: 768px) {
             .background-image {
-                /* Adjust background position for mobile */
                 background-position: center center;
             }
         }
         
-        /* Additional mobile optimization for very small screens */
         @media screen and (max-width: 480px) {
             .background-image {
-                /* Further adjustments for very small screens if needed */
                 background-size: cover;
             }
+        }
+        
+        /* Style for the footer blocker */
+        #footer-blocker {
+            position: fixed;
+            left: 20px;
+            bottom: 0;
+            width: 24rem;
+            height: 40px;
+            background-color: #020049;
+            z-index: 100000;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -48,44 +56,72 @@
     <!-- Photo background div -->
     <div class="background-image"></div>
     
+    <!-- Footer blocker div -->
+    <div id="footer-blocker"></div>
+    
     <!-- Embed Code -->
     <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script>
-
+    
     <script>
-window.difyChatbotConfig = {
-  token: 'NNdUFR87RVKchHmG',
-  systemVariables: {
-    // user_id: 'YOU CAN DEFINE USER ID HERE',
-  },
-}
-</script>
-<script src="https://udify.app/embed.min.js" id="NNdUFR87RVKchHmG" defer></script>
-<style>
-#dify-chatbot-bubble-button {
-  background-color: #1C64F2 !important;
-  left: 20px !important; 
-  right: auto !important;
-}
-#dify-chatbot-bubble-window {
-  width: 24rem !important;
-  height: 40rem !important;
-  left: 20px !important;
-  right: auto !important;
-}
-</style>
-
-<!-- Add this script to create an overlay after the chatbot loads -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Wait for the chatbot to load
-  setTimeout(function() {
-    // Create overlay element
-    var overlay = document.createElement('div');
-    overlay.id = 'powered-by-overlay';
-    overlay.style.cssText = 'position: fixed; z-index: 99999; background-color: #020049; width: 24rem; height: 30px; bottom: 0; left: 20px; pointer-events: none;';
-    document.body.appendChild(overlay);
-  }, 2000); // Wait 2 seconds for chatbot to load
-});
-</script>
+        window.difyChatbotConfig = {
+          token: 'NNdUFR87RVKchHmG',
+          systemVariables: {
+            // user_id: 'YOU CAN DEFINE USER ID HERE',
+          }
+        }
+    </script>
+    <script src="https://udify.app/embed.min.js" id="NNdUFR87RVKchHmG" defer></script>
+    <style>
+        #dify-chatbot-bubble-button {
+          background-color: #1C64F2 !important;
+          left: 20px !important; 
+          right: auto !important;
+        }
+        #dify-chatbot-bubble-window {
+          width: 24rem !important;
+          height: 40rem !important;
+          left: 20px !important;
+          right: auto !important;
+        }
+    </style>
+    
+    <script>
+        // Function to create and adjust the blocker
+        function adjustFooterBlocker() {
+            // Get the blocker
+            var blocker = document.getElementById('footer-blocker');
+            
+            // Make sure it's visible and properly positioned
+            if (blocker) {
+                blocker.style.display = 'block';
+                blocker.style.zIndex = '100000';
+            }
+        }
+        
+        // Use a MutationObserver to detect when elements are added to the DOM
+        var observer = new MutationObserver(function(mutations) {
+            // Check for any new nodes that might be our chatbot
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    // Call our adjustment function
+                    setTimeout(adjustFooterBlocker, 100);
+                }
+            });
+        });
+        
+        // Start observing the document body for changes
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Also call the function periodically just to be safe
+        setInterval(adjustFooterBlocker, 1000);
+        
+        // And call it on load
+        window.addEventListener('load', function() {
+            // Initial delay to ensure chatbot is loaded
+            setTimeout(adjustFooterBlocker, 1000);
+            setTimeout(adjustFooterBlocker, 2000);
+            setTimeout(adjustFooterBlocker, 5000);
+        });
+    </script>
 </body>
 </html>
