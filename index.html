@@ -38,26 +38,6 @@
                 background-size: cover;
             }
         }
-        
-        /* Footer blocker */
-        .footer-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 20px;
-            width: 384px; /* 24rem */
-            height: 40px;
-            background-color: #020049;
-            z-index: 999999;
-            pointer-events: none;
-        }
-        
-        /* Mobile responsive footer blocker */
-        @media screen and (max-width: 768px) {
-            .footer-overlay {
-                width: 100%;
-                left: 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -67,7 +47,7 @@
     <!-- First chatbot (servicehoster.io) -->
     <script>(function(f,n) { n = document.createElement('script'); n.src = 'https://fcdn.servicehoster.io/fn.js'; n.setAttribute('data-companyId', f); document.getElementsByTagName('html')[0].insertAdjacentElement('beforeend', n); })('b59e63eb-5c9e-4dfc-a656-85ddfc6a4181');</script>
     
-    <!-- Second chatbot (updated embed code) -->
+    <!-- Chatbot embed code -->
     <script>
         window.difyChatbotConfig = {
             token: 'oxHKBhp39pCdDBl3',
@@ -78,10 +58,6 @@
     </script>
     <script src="https://udify.app/embed.min.js" id="oxHKBhp39pCdDBl3" defer></script>
     
-    <!-- Static footer overlays at different positions -->
-    <div class="footer-overlay" id="footer-overlay-1"></div>
-    
-    <!-- Styling for the chatbot - avoiding vendor name mentions where possible -->
     <style>
         /* Position the chatbot on the left */
         #dify-chatbot-bubble-button {
@@ -97,57 +73,159 @@
             right: auto !important;
         }
         
-        /* Generic selectors that avoid vendor names */
+        /* Hide the footer - multiple approaches */
         [class*="powered-by"],
         [class*="footer"],
-        div[style*="bottom: 0"],
-        div[style*="bottom:0"],
-        iframe + div:last-child {
+        [class*="bottom-bar"],
+        [class*="attribution"],
+        [class*="credit"],
+        [class*="copyright"],
+        [id*="powered-by"],
+        [id*="footer"],
+        [id*="bottom-bar"],
+        [id*="attribution"],
+        [id*="credit"],
+        [id*="copyright"] {
+            display: none !important;
             opacity: 0 !important;
             visibility: hidden !important;
-            display: none !important;
+            height: 0 !important;
+            width: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            pointer-events: none !important;
         }
         
-        /* Additional selector for chatbot footer */
-        #dify-chatbot-bubble-window div:last-child {
-            display: none !important;
+        /* Add custom footer blocker that will remain fixed at the bottom */
+        .custom-footer-blocker {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            height: 40px !important;
+            width: 100% !important;
+            background-color: #020049 !important;
+            z-index: 2147483647 !important; /* Maximum z-index value */
+            pointer-events: none !important;
         }
-    </style>
-    
-    <!-- Optimized script for performance -->
-    <script>
-        // We'll use a more efficient approach with a limited number of operations
-        let overlayPositioned = false;
         
-        function setupFooterBlocker() {
-            if (overlayPositioned) return; // Only run once to avoid excessive operations
-            
-            const chatbotContainer = document.getElementById('dify-chatbot-bubble-window');
-            if (!chatbotContainer) return;
-            
-            // Get dimensions and position
-            const rect = chatbotContainer.getBoundingClientRect();
-            const overlay = document.getElementById('footer-overlay-1');
-            
-            if (overlay) {
-                // Position the overlay precisely at the bottom of the chatbot
-                overlay.style.left = rect.left + 'px';
-                overlay.style.width = rect.width + 'px';
-                overlayPositioned = true;
+        /* Targeted blocker specific to chatbot position */
+        .chatbot-footer-blocker {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 20px !important;
+            height: 40px !important;
+            width: 384px !important; /* 24rem */
+            background-color: #020049 !important;
+            z-index: 2147483647 !important;
+            pointer-events: none !important;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .chatbot-footer-blocker {
+                width: 100% !important;
+                left: 0 !important;
             }
         }
         
-        // Run only a few times after page load to avoid performance issues
+        /* Apply negative margin to push content up */
+        #dify-chatbot-bubble-window > div:last-child,
+        #dify-chatbot-bubble-window > div > div:last-child {
+            margin-bottom: -40px !important;
+        }
+    </style>
+    
+    <!-- Static blockers that will always be present -->
+    <div class="custom-footer-blocker"></div>
+    <div class="chatbot-footer-blocker"></div>
+    
+    <!-- Advanced JavaScript solution -->
+    <script>
+        // Function to ensure our blockers remain on top
+        function ensureBlockersAreVisible() {
+            // Try to find any elements that might be a footer
+            const possibleFooters = document.querySelectorAll('[class*="powered"],[class*="footer"],[class*="bottom-bar"]');
+            
+            // Force hide them
+            possibleFooters.forEach(element => {
+                element.style.display = 'none';
+                element.style.visibility = 'hidden';
+                element.style.opacity = '0';
+                element.style.height = '0';
+            });
+            
+            // Find all iframes to try style injection
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                try {
+                    // Try to access iframe content
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    // Check if we've already injected our style
+                    if (!iframeDoc.getElementById('footer-hider-style')) {
+                        // Create a style element
+                        const style = iframeDoc.createElement('style');
+                        style.id = 'footer-hider-style';
+                        style.textContent = `
+                            [class*="powered"], [class*="footer"], [class*="bottom-bar"],
+                            [class*="attribution"], [class*="credit"], [class*="copyright"] {
+                                display: none !important;
+                                visibility: hidden !important;
+                                opacity: 0 !important;
+                                height: 0 !important;
+                            }
+                            
+                            /* Add a cover at the bottom of the iframe */
+                            body::after {
+                                content: "";
+                                position: fixed;
+                                bottom: 0;
+                                left: 0;
+                                right: 0;
+                                height: 40px;
+                                background-color: #020049;
+                                z-index: 2147483647;
+                                pointer-events: none;
+                            }
+                        `;
+                        
+                        // Add it to the iframe
+                        iframeDoc.head.appendChild(style);
+                    }
+                } catch (e) {
+                    // Cross-origin restriction, can't access iframe
+                }
+            });
+            
+            // Make sure our blockers are on top by recreating them
+            const existingBlockers = document.querySelectorAll('.custom-footer-blocker, .chatbot-footer-blocker');
+            existingBlockers.forEach(blocker => {
+                // Clone and replace to ensure they're on top of DOM
+                const newBlocker = blocker.cloneNode(true);
+                document.body.appendChild(newBlocker);
+                setTimeout(() => {
+                    try {
+                        if (document.body.contains(blocker)) {
+                            document.body.removeChild(blocker);
+                        }
+                    } catch (e) {
+                        // Element might be already removed
+                    }
+                }, 100);
+            });
+        }
+        
+        // Run on load and periodically, but with limited frequency for performance
         window.addEventListener('load', function() {
-            setTimeout(setupFooterBlocker, 2000);
-            setTimeout(setupFooterBlocker, 5000);
+            // Initial runs after various delays
+            setTimeout(ensureBlockersAreVisible, 1000);
+            setTimeout(ensureBlockersAreVisible, 3000);
+            
+            // Set up a less frequent interval to maintain the blockers
+            setInterval(ensureBlockersAreVisible, 5000);
         });
         
-        // Also check once on resize
-        window.addEventListener('resize', function() {
-            overlayPositioned = false; // Reset flag on resize
-            setupFooterBlocker();
-        });
+        // Run once on resize
+        window.addEventListener('resize', ensureBlockersAreVisible);
     </script>
 </body>
 </html>
